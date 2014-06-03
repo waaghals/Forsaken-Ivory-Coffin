@@ -3,7 +3,7 @@
 /*
  * The MIT License
  *
- * Copyright 2014 Patrick.
+ * Copyright 2014 Waaghals.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,6 +26,8 @@
 
 namespace ForsakenIvoryCoffin\Parsers;
 
+use ForsakenIvoryCoffin\Parsers\ElementParserInterface;
+
 /**
  *
  * @author Patrick
@@ -38,11 +40,17 @@ interface DocumentParserInterface
      *
      * @param string $filePath Path to a file to be opened
      */
-    function useFile($filePath);
+    function setFile($filePath);
 
     /**
      * Parse the set xml file
      *
      */
     function parse();
+
+    /**
+     *
+     *
+     */
+    function setElementParser(ElementParserInterface $elementParser);
 }

@@ -24,35 +24,31 @@
  * THE SOFTWARE.
  */
 
-namespace ForsakenIvoryCoffin\Parsers;
+namespace ForsakenIvoryCoffin\ElementParsers;
+
+use ForsakenIvoryCoffin\Parsers\ElementParserInterface;
 
 /**
+ * Echo´s the elements on screen
  *
  * @author Patrick
  */
-interface ElementParserInterface
+class EchoParser implements ElementParserInterface
 {
 
-    /**
-     * Called when a opening element is found.
-     *
-     * @param string $elementName Name of the element
-     * @param array $attributes Associative array with the element's attributes (if any).
-     *      The keys of this array are the attribute names, the values are the attribute values.
-     */
-    function parseStart($elementName, array $attributes);
+    public function parseContent($content)
+    {
 
-    /**
-     * Called when a closing element is found
-     *
-     * @param string $elementName Name of the element
-     */
-    function parseEnd($elementName);
+    }
 
-    /**
-     * Called for every piece of a text in the XML document. It can be called multiple times inside each fragment (e.g. for non-ASCII strings).
-     *
-     * @param string $content Current character
-     */
-    function parseContent($content);
+    public function parseEnd($elementName)
+    {
+
+    }
+
+    public function parseStart($elementName, array $attributes)
+    {
+
+    }
+
 }

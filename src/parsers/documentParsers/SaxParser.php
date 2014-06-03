@@ -24,35 +24,40 @@
  * THE SOFTWARE.
  */
 
-namespace ForsakenIvoryCoffin\Parsers;
+namespace ForsakenIvoryCoffin\Parsers\DocumentParsers;
+
+use ForsakenIvoryCoffin\Parsers\DocumentParserInterface;
+use ForsakenIvoryCoffin\Parsers\ElementParserInterface;
 
 /**
+ * Parse a XML file using SAX
  *
  * @author Patrick
  */
-interface ElementParserInterface
+class SaxParser implements DocumentParserInterface
 {
 
-    /**
-     * Called when a opening element is found.
-     *
-     * @param string $elementName Name of the element
-     * @param array $attributes Associative array with the element's attributes (if any).
-     *      The keys of this array are the attribute names, the values are the attribute values.
-     */
-    function parseStart($elementName, array $attributes);
+    private $parser;
+    private $filepath;
 
-    /**
-     * Called when a closing element is found
-     *
-     * @param string $elementName Name of the element
-     */
-    function parseEnd($elementName);
+    function __construct()
+    {
+        $this->parser = xml_parser_create();
+    }
 
-    /**
-     * Called for every piece of a text in the XML document. It can be called multiple times inside each fragment (e.g. for non-ASCII strings).
-     *
-     * @param string $content Current character
-     */
-    function parseContent($content);
+    public function parse()
+    {
+
+    }
+
+    public function setFile($filePath)
+    {
+        $this->filepath = $filePath;
+    }
+
+    public function setElementParser(ElementParserInterface $elementParser)
+    {
+
+    }
+
 }

@@ -24,35 +24,31 @@
  * THE SOFTWARE.
  */
 
-namespace ForsakenIvoryCoffin\Parsers;
+namespace ForsakenIvoryCoffin\Parsers\DocumentParsers;
+
+use ForsakenIvoryCoffin\Parsers\DocumentParserInterface;
 
 /**
+ * Parse a XML file using DOM
  *
  * @author Patrick
  */
-interface ElementParserInterface
+class DomParser implements DocumentParserInterface
 {
 
-    /**
-     * Called when a opening element is found.
-     *
-     * @param string $elementName Name of the element
-     * @param array $attributes Associative array with the element's attributes (if any).
-     *      The keys of this array are the attribute names, the values are the attribute values.
-     */
-    function parseStart($elementName, array $attributes);
+    public function parse()
+    {
 
-    /**
-     * Called when a closing element is found
-     *
-     * @param string $elementName Name of the element
-     */
-    function parseEnd($elementName);
+    }
 
-    /**
-     * Called for every piece of a text in the XML document. It can be called multiple times inside each fragment (e.g. for non-ASCII strings).
-     *
-     * @param string $content Current character
-     */
-    function parseContent($content);
+    public function setElementParser(\ForsakenIvoryCoffin\Parsers\ElementParserInterface $elementParser)
+    {
+
+    }
+
+    public function setFile($filePath)
+    {
+
+    }
+
 }
