@@ -37,10 +37,12 @@ class EchoParser implements ElementParserInterface
 {
 
     private $depth;
+    private $indentation;
 
-    public function __construct()
+    public function __construct($indentation)
     {
-        $this->depth = 0;
+        $this->depth       = 0;
+        $this->indentation = $indentation;
     }
 
     public function parseContent($content)
@@ -56,7 +58,7 @@ class EchoParser implements ElementParserInterface
     public function parseStart($elementName, array $attributes)
     {
         print("\n");
-        $depthStr = \str_repeat(".", $this->depth);
+        $depthStr = \str_repeat($this->indentation, $this->depth);
         printf("%s%s: ", $depthStr, $elementName);
         $this->depth++;
     }

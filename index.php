@@ -35,18 +35,20 @@ $loader->register();
 
 
 $saxParser = new SaxParser();
-$saxParser->setFile("aii.xml");
-$saxParser->setElementParser(new EchoParser());
+$saxParser->setFile("xmlFiles/aii.xml");
+$saxParser->setElementParser(new EchoParser("  "));
 
+echo "<h1>Sax Parser</h1>";
 echo "<pre>";
 $saxParser->parse();
 echo "</pre>";
 
 
 $domParser = new DomParser();
-$domParser->setFile("aii.xml");
-$domParser->setElementParser(new EchoParser());
+$domParser->setFile("xmlFiles/aii.xml");
+$domParser->setElementParser(new EchoParser("  "));
 
+echo "<h1>DOM Parser</h1>";
 echo "<pre>";
 $domParser->parse();
 echo "</pre>";
