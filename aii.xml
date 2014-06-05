@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<aii>
+  <!-- quasi commentaar: aii is de root node voor de Academie voor Industrie en Informatica -->
+  <kennisgebied richting="ni">
+    <naam>Netwerken en Internet</naam>
+    <coordinator>
+      <docent>Rob Verhoef</docent>
+      <kamer>G555</kamer>
+      <email>rverhoef@avans.nl</email>
+    </coordinator>
+  </kennisgebied>
+  <kennisgebied  richting="es">
+    <naam>Embedded Software</naam>
+    <coordinator>
+      <docent>Bob Verlaat</docent>
+      <kamer>G666</kamer>
+      <email>bverlaat@avans.nl</email>
+    </coordinator>
+  </kennisgebied>
+</aii>
