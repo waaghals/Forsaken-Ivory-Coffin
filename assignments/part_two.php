@@ -24,31 +24,26 @@
  * THE SOFTWARE.
  */
 
-require 'SplClassLoader.php';
+require '../SplClassLoader.php';
 
 use ForsakenIvoryCoffin\Parsers\DocumentParsers\SaxParser;
-use ForsakenIvoryCoffin\Parsers\DocumentParsers\DomParser;
 use ForsakenIvoryCoffin\Parsers\ElementParsers\EchoParser;
+use ForsakenIvoryCoffin\Parsers\ElementParsers\Decorators\ForcastTableDecorator as Table;
+use ForsakenIvoryCoffin\Parsers\ElementParsers\Decorators\ForcastTableRowDecorator as Row;
 
-$loader = new SplClassLoader('ForsakenIvoryCoffin', 'src');
+$loader = new SplClassLoader('ForsakenIvoryCoffin', '../src');
 $loader->register();
 
+$weatherData = \file_get_contents("http://xml.buienradar.nl/");
 
 $saxParser = new SaxParser();
-$saxParser->setFile("xmlFiles/aii.xml");
-$saxParser->setElementParser(new EchoParser("  "));
+$saxParser->setFile("../xmlFiles/buienradar.xml");
+$saxParser->setElementParser(new Table(new Row(new EchoParser(""))));
 
-echo "<h1>Sax Parser</h1>";
-echo "<pre>";
+echo "<h1>Weersverwachting</h1>";
+echo
+"Toon de weersverwachting voor de komende 5 dagen. "
+ . "De data wordt geparsed uit de XML van <a href=\"http://www.buienradar.nl\">Buienradar</a>."
+ . "Vervolgens wordt op basis van element naam bepaald hoe deze getoont moeten worden."
+ . "De data wordt geparsed en in een HTML tabel gezet.";
 $saxParser->parse();
-echo "</pre>";
-
-
-$domParser = new DomParser();
-$domParser->setFile("xmlFiles/aii.xml");
-$domParser->setElementParser(new EchoParser("  "));
-
-echo "<h1>DOM Parser</h1>";
-echo "<pre>";
-$domParser->parse();
-echo "</pre>";

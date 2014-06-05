@@ -24,23 +24,31 @@
  * THE SOFTWARE.
  */
 
-namespace ForsakenIvoryCoffin\Parsers\ElementParsers;
+require '../SplClassLoader.php';
 
-use ForsakenIvoryCoffin\Parsers\ElementParserInterface;
+use ForsakenIvoryCoffin\Parsers\DocumentParsers\SaxParser;
+use ForsakenIvoryCoffin\Parsers\DocumentParsers\DomParser;
+use ForsakenIvoryCoffin\Parsers\ElementParsers\EchoParser;
 
-/**
- * Decorator for an ElementParser
- *
- * @author Patrick
- */
-abstract class AbstractParserDecorator implements ElementParserInterface
-{
+$loader = new SplClassLoader('ForsakenIvoryCoffin', '../src');
+$loader->register();
 
-    protected $parent;
 
-    public function __construct(ElementParserInterface $elementParser)
-    {
-        $this->parent = $elementParser;
-    }
+$saxParser = new SaxParser();
+$saxParser->setFile("../xmlFiles/aii.xml");
+$saxParser->setElementParser(new EchoParser("  "));
 
-}
+echo "<h1>Sax Parser</h1>";
+echo "<pre>";
+$saxParser->parse();
+echo "</pre>";
+
+
+$domParser = new DomParser();
+$domParser->setFile("../xmlFiles/aii.xml");
+$domParser->setElementParser(new EchoParser("  "));
+
+echo "<h1>DOM Parser</h1>";
+echo "<pre>";
+$domParser->parse();
+echo "</pre>";
