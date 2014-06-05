@@ -14,3 +14,5 @@ In de uitwerking wordt de structuur van een willekeurig XML bestand getoont. Ter
 
 ## Deelopdracht 2
 In deze opdracht wordt de 5 daagse vooruitzicht verwerkt uit het `buienradar.xml` bestand. Deze wordt zo geparsed dat de inhoud netjes in een HTML tabel wordt getoont. Er is hier gekozen voor het _Decorator Pattern_. Hierdoor is het mogelijk om in runtime de functionaliteit van een element parser uit te breiden. ![Klasse diagram](uml/Klasse diagram.jpeg)
+
+Er wordt tijdens het parsen van elementen een HTML table tag getoont wanneer er een open element gevonden wordt met de waarde  *verwachting_meerdaags*. Hier worden ook gelijk de table headings aan toegevoegd. Hiervoor is de klasse `ForcastTableDecorator` verantwoordelijk. Het tonen van de tabel rijen en het vullen van de cel inhoud doet de `ForcastTableRowDecorator`.
