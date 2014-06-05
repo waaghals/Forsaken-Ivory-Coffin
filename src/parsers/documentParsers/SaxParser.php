@@ -37,27 +37,72 @@ use ForsakenIvoryCoffin\Parsers\ElementParserInterface;
 class SaxParser implements DocumentParserInterface
 {
 
+    const BLOCK_SIZE = 4096;
+
     private $parser;
     private $filepath;
 
-    function __construct()
+    /**
+     * Constructor sets the xml_parser object
+     */
+    public function __construct()
     {
         $this->parser = xml_parser_create();
     }
 
+    /**
+     * Parse the xml file
+     *
+     * @throws \Exception When the file could not be opened or a parser error occured.
+     */
     public function parse()
     {
+        if (!($fp = fopen($this->filepath, 'r'))) {
+            $msg = sprintf("Could not open file: %s", $this->filepath);
+            throw new \Exception($msg);
+        }
 
+        while ($data = fread($fp, self::BLOCK_SIZE)) {
+            if (!xml_parse($this->parser, $data, feof($fp))) {
+
+                //Could not parse, throw exception
+                $errorString = xml_error_string($this->parser);
+                $lineNumber  = xml_get_current_line_number($this->parser);
+                $msg         = "Parse error: %s at line %s";
+                throw new \Exception(sprintf($msg, $errorString, $lineNumber));
+            }
+        }
+        fclose($fp);
     }
 
+    /**
+     *
+     * @param string $filePath
+     */
     public function setFile($filePath)
     {
         $this->filepath = $filePath;
     }
 
+    /**
+     *
+     * @param \ForsakenIvoryCoffin\Parsers\ElementParserInterface $elementParser
+     */
     public function setElementParser(ElementParserInterface $elementParser)
     {
+        $startCallable = array($elementParser, 'parseStart');
+        $endCallable   = array($elementParser, 'parseEnd');
+        $dataCallable  = array($elementParser, 'parseContent');
+        xml_set_element_handler($this->parser, $startCallable, $endCallable);
+        xml_set_character_data_handler($this->parser, $dataCallable);
+    }
 
+    /**
+     * Free the xml_parser object
+     */
+    public function __destruct()
+    {
+        xml_parser_free($this->parser);
     }
 
 }

@@ -27,6 +27,7 @@
 namespace ForsakenIvoryCoffin\Parsers\DocumentParsers;
 
 use ForsakenIvoryCoffin\Parsers\DocumentParserInterface;
+use ForsakenIvoryCoffin\Parsers\ElementParserInterface;
 
 /**
  * Parse a XML file using DOM
@@ -36,19 +37,82 @@ use ForsakenIvoryCoffin\Parsers\DocumentParserInterface;
 class DomParser implements DocumentParserInterface
 {
 
+    /**
+     *
+     * @var \DOMDocument
+     */
+    private $parser;
+    private $elementParser;
+
+    /**
+     * Set the parser to a DOMDocument parser
+     */
+    public function __construct()
+    {
+        $this->parser = new DOMDocument();
+    }
+
+    /**
+     * Parse a xml document
+     *
+     * @throws \Exception When no parser has been set
+     */
     public function parse()
     {
+        if (is_null($this->elementParser)) {
+            throw new \Exception("No element parsers has been set.");
+        }
 
+        $rootNode = $this->parser->documentElement;
+        $this->processNode($rootNode->nodeValue);
     }
 
-    public function setElementParser(\ForsakenIvoryCoffin\Parsers\ElementParserInterface $elementParser)
+    /**
+     * Set the ElementParser responsible for parsing elements
+     *
+     * @param \ForsakenIvoryCoffin\Parsers\ElementParserInterface $elementParser
+     */
+    public function setElementParser(ElementParserInterface $elementParser)
     {
-
+        $this->elementParser = $elementParser;
     }
 
+    /**
+     * Set the file path for the file that needs to be parsed
+     *
+     * @param string $filePath
+     * @throws \Exception When file could not be opened.
+     */
     public function setFile($filePath)
     {
+        if (!$this->parser->load($filePath)) {
+            $msg = sprintf("Could not open file: %s", $this->filepath);
+            throw new \Exception($msg);
+        }
+    }
 
+    /**
+     * Parse a node content, if the node has children parse their content recursivly
+     *
+     * @param \DOMNode $node
+     */
+    private function processNode(\DOMNode $node)
+    {
+        $this->elementParser->parseStart($node->nodeName, $node->attributes);
+
+        if ($node->hasChildNodes()) {
+
+            //Parse the children as well
+            foreach ($node->childNodes() as $childNode) {
+                $this->processNode($childNode);
+            }
+        }
+
+        if ($node->nodeType() == XML_TEXT_NODE) {
+            $this->elementParser->parseContent($node->nodeValue);
+        }
+
+        $this->elementParser->parseEnd($this->nodeName);
     }
 
 }
