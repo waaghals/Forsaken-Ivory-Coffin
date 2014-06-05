@@ -39,7 +39,22 @@ class SaxParser implements DocumentParserInterface
 
     const BLOCK_SIZE = 4096;
 
+    /**
+     *
+     * @var resource
+     */
     private $parser;
+
+    /**
+     *
+     * @var ElementParserInterface
+     */
+    private $elementParser;
+
+    /**
+     *
+     * @var string
+     */
     private $filepath;
 
     /**
@@ -48,6 +63,8 @@ class SaxParser implements DocumentParserInterface
     public function __construct()
     {
         $this->parser = xml_parser_create();
+        xml_parser_set_option($this->parser, XML_OPTION_SKIP_WHITE, true);
+        xml_parser_set_option($this->parser, XML_OPTION_CASE_FOLDING, false);
     }
 
     /**
@@ -90,9 +107,10 @@ class SaxParser implements DocumentParserInterface
      */
     public function setElementParser(ElementParserInterface $elementParser)
     {
-        $startCallable = array($elementParser, 'parseStart');
-        $endCallable   = array($elementParser, 'parseEnd');
-        $dataCallable  = array($elementParser, 'parseContent');
+        $this->elementParser = $elementParser;
+        $startCallable       = array($this, 'callStart');
+        $endCallable         = array($this, 'callEnd');
+        $dataCallable        = array($this, 'callContent');
         xml_set_element_handler($this->parser, $startCallable, $endCallable);
         xml_set_character_data_handler($this->parser, $dataCallable);
     }
@@ -103,6 +121,43 @@ class SaxParser implements DocumentParserInterface
     public function __destruct()
     {
         xml_parser_free($this->parser);
+    }
+
+    /**
+     * Adapter for ElementParser->parseStart()
+     *
+     * @param resource $p
+     * @param string $elementName
+     * @param array $attributes
+     */
+    private function callStart($p, $elementName, array $attributes)
+    {
+        $this->elementParser->parseStart($elementName, $attributes);
+    }
+
+    /**
+     * Adapter for ElementParser->parseEnd()
+     *
+     * @param resource $p
+     * @param string $elementName
+     */
+    private function callEnd($p, $elementName)
+    {
+        $this->elementParser->parseEnd($elementName);
+    }
+
+    /**
+     * Adapter for ElementParser->parseContent()
+     *
+     * @param resource $p
+     * @param string $content
+     */
+    private function callContent($p, $content)
+    {
+        // Only parseContent when there is more then just whitespace
+        if (strlen(trim($content)) > 0) {
+            $this->elementParser->parseContent($content);
+        }
     }
 
 }

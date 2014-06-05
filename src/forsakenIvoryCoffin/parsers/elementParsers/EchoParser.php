@@ -24,7 +24,7 @@
  * THE SOFTWARE.
  */
 
-namespace ForsakenIvoryCoffin\ElementParsers;
+namespace ForsakenIvoryCoffin\Parsers\ElementParsers;
 
 use ForsakenIvoryCoffin\Parsers\ElementParserInterface;
 
@@ -55,6 +55,7 @@ class EchoParser implements ElementParserInterface
 
     public function parseStart($elementName, array $attributes)
     {
+        print("\n");
         $depthStr = \str_repeat(".", $this->depth);
         printf("%s%s: ", $depthStr, $elementName);
         $this->depth++;

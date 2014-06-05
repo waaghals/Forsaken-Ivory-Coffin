@@ -42,6 +42,11 @@ class DomParser implements DocumentParserInterface
      * @var \DOMDocument
      */
     private $parser;
+
+    /**
+     *
+     * @var ElementParserInterface
+     */
     private $elementParser;
 
     /**
@@ -49,7 +54,8 @@ class DomParser implements DocumentParserInterface
      */
     public function __construct()
     {
-        $this->parser = new DOMDocument();
+        $this->parser                     = new \DOMDocument();
+        $this->parser->preserveWhiteSpace = false;
     }
 
     /**
@@ -64,7 +70,7 @@ class DomParser implements DocumentParserInterface
         }
 
         $rootNode = $this->parser->documentElement;
-        $this->processNode($rootNode->nodeValue);
+        $this->processNode($rootNode);
     }
 
     /**
@@ -98,21 +104,44 @@ class DomParser implements DocumentParserInterface
      */
     private function processNode(\DOMNode $node)
     {
-        $this->elementParser->parseStart($node->nodeName, $node->attributes);
+        //Attributes is Traversable, but needs to be a array.
+        //Convert it to an array if it has any values.
+        $attributes = array();
+        if (count($node->attributes) > 0) {
+            $attributes = iterator_to_array($node->attributes);
+        }
+
+        $this->callStart($node, $attributes);
 
         if ($node->hasChildNodes()) {
 
             //Parse the children as well
-            foreach ($node->childNodes() as $childNode) {
+            foreach ($node->childNodes as $childNode) {
                 $this->processNode($childNode);
             }
         }
 
-        if ($node->nodeType() == XML_TEXT_NODE) {
-            $this->elementParser->parseContent($node->nodeValue);
+        if ($node->nodeType == XML_TEXT_NODE) {
+            $this->elementParser->parseContent($node->textContent);
         }
 
-        $this->elementParser->parseEnd($this->nodeName);
+        $this->callEnd($node);
+    }
+
+    private function callStart(\DOMNode $node, array $attributes)
+    {
+        //Don't parse special case nodes like #comment and #text
+        if ($node->nodeType != XML_COMMENT_NODE && $node->nodeType != XML_TEXT_NODE) {
+            $this->elementParser->parseStart($node->nodeName, $attributes);
+        }
+    }
+
+    private function callEnd(\DOMNode $node)
+    {
+        //Don't parse special case nodes like #comment and #text
+        if ($node->nodeType != XML_COMMENT_NODE && $node->nodeType != XML_TEXT_NODE) {
+            $this->elementParser->parseEnd($node->nodeName);
+        }
     }
 
 }

@@ -27,13 +27,26 @@
 require 'SplClassLoader.php';
 
 use ForsakenIvoryCoffin\Parsers\DocumentParsers\SaxParser;
-use ForsakenIvoryCoffin\ElementParsers\EchoParser;
+use ForsakenIvoryCoffin\Parsers\DocumentParsers\DomParser;
+use ForsakenIvoryCoffin\Parsers\ElementParsers\EchoParser;
 
 $loader = new SplClassLoader('ForsakenIvoryCoffin', 'src');
 $loader->register();
 
 
-$parser = new SaxParser();
-$parser->setFile("aii.xml");
-$parser->setElementParser(new EchoParser());
-$parser->parse();
+$saxParser = new SaxParser();
+$saxParser->setFile("aii.xml");
+$saxParser->setElementParser(new EchoParser());
+
+echo "<pre>";
+$saxParser->parse();
+echo "</pre>";
+
+
+$domParser = new DomParser();
+$domParser->setFile("aii.xml");
+$domParser->setElementParser(new EchoParser());
+
+echo "<pre>";
+$domParser->parse();
+echo "</pre>";
