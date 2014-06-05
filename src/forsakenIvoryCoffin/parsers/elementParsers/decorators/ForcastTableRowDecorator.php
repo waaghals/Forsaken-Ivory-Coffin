@@ -37,10 +37,23 @@ use ForsakenIvoryCoffin\Parsers\ElementParserInterface;
 class ForcastTableRowDecorator extends AbstractParserDecorator implements ElementParserInterface
 {
 
+    /**
+     * Pattern which matches the 5-day forcast elements
+     */
     const PATTERN = "/dag-plus[0-5]/";
 
+    /**
+     * Used to deside if the content of the current tag should be showed.
+     * Because there should only be cells returned when te surrounding tag is in the table.
+     *
+     * @var boolean
+     */
     private $shouldShowContent = false;
 
+    /**
+     * Adds a table cell around the values in the table rows.
+     * @param string $content
+     */
     public function parseContent($content)
     {
         if ($this->shouldShowContent) {
@@ -49,6 +62,10 @@ class ForcastTableRowDecorator extends AbstractParserDecorator implements Elemen
         }
     }
 
+    /**
+     * Closes a table row when the element is used in the table
+     * @param string $elementName
+     */
     public function parseEnd($elementName)
     {
         if (preg_match(self::PATTERN, $elementName)) {
@@ -56,14 +73,26 @@ class ForcastTableRowDecorator extends AbstractParserDecorator implements Elemen
         }
     }
 
+    /**
+     * Starts a table row when element is used in the table
+     *
+     * @param string $elementName
+     * @param array $attributes
+     */
     public function parseStart($elementName, array $attributes)
     {
         $this->shouldShowContent = $this->isUsefulElement($elementName);
         if (preg_match(self::PATTERN, $elementName)) {
-            echo"<tr>";
+            $this->parent->parseEnd("<tr>");
         }
     }
 
+    /**
+     * Return is the element is used in the table
+     *
+     * @param string $elementName
+     * @return boolean
+     */
     private function isUsefulElement($elementName)
     {
         switch ($elementName) {

@@ -37,6 +37,11 @@ use ForsakenIvoryCoffin\Parsers\ElementParserInterface;
 class ForcastTableDecorator extends AbstractParserDecorator implements ElementParserInterface
 {
 
+    /**
+     * Used to quickly eliminate other elements which should not be parsed.
+     *
+     * @var boolean
+     */
     private $shouldContinue = false;
 
     public function parseContent($content)
@@ -46,6 +51,11 @@ class ForcastTableDecorator extends AbstractParserDecorator implements ElementPa
         }
     }
 
+    /**
+     * Closes the opened forcast table
+     *
+     * @param string $elementName
+     */
     public function parseEnd($elementName)
     {
         if ($elementName === "verwachting_meerdaags") {
@@ -59,6 +69,12 @@ class ForcastTableDecorator extends AbstractParserDecorator implements ElementPa
         }
     }
 
+    /**
+     * Set a table with heading for the forcast table
+     *
+     * @param string $elementName
+     * @param array $attributes
+     */
     public function parseStart($elementName, array $attributes)
     {
         if ($this->shouldContinue) {
