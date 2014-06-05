@@ -36,19 +36,28 @@ use ForsakenIvoryCoffin\Parsers\ElementParserInterface;
 class EchoParser implements ElementParserInterface
 {
 
+    private $depth;
+
+    public function __construct()
+    {
+        $this->depth = 0;
+    }
+
     public function parseContent($content)
     {
-
+        print($content);
     }
 
     public function parseEnd($elementName)
     {
-
+        $this->depth--;
     }
 
     public function parseStart($elementName, array $attributes)
     {
-
+        $depthStr = \str_repeat(".", $this->depth);
+        printf("%s%s: ", $depthStr, $elementName);
+        $this->depth++;
     }
 
 }
